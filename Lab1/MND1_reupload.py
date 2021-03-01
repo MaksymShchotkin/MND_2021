@@ -1,7 +1,7 @@
 from random import *
 from pprint import *
 
-n = int(input('Дайте порог!'))
+n = int(input('Дайте порог!')) #порог - це максимальне значення якого можуть набувати рандомні значення у таблиці
 mat = [[randint(1,n) for j in range(3)] for i in range(8)]
 a0,a1,a2,a3 = [randint(1,n) for k in range(4)]
 
