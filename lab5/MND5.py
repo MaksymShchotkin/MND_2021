@@ -4,6 +4,7 @@ import sklearn.linear_model as lm
 from scipy.stats import f, t
 from functools import partial
 from pyDOE2 import *
+from time import time
 
 
 x_range = ((-5, 5), (-9, 3), (-3, 5))
@@ -167,6 +168,7 @@ def kriteriy_fishera(y, y_aver, y_new, n, m, d):
 
 
 def check(X, Y, B, n, m):
+    start = time()
     print('\n\tПеревірка рівняння:')
     f1 = m - 1
     f2 = n
@@ -227,6 +229,8 @@ def check(X, Y, B, n, m):
         print('Математична модель адекватна експериментальним даним')
     else:
         print('Математична модель не адекватна експериментальним даним\nНеобхідно збільшити кількість дослідів')
+    end = time()
+    print(f'Пройшло часу: {end - start} секунд')
 
 
 def main(n, m):
