@@ -1,6 +1,6 @@
 from random import randint
-from functools import reduce
 from numpy.linalg import det
+from functools import reduce
 
 
 def naturalize(matrix_of_plan, min_max_arr):
@@ -11,96 +11,94 @@ def naturalize(matrix_of_plan, min_max_arr):
 
 
 def main():
+    m = 3
     x1 = [10, 50]
     x2 = [20, 60]
     x3 = [20, 25]
+    print(f'x1_min = {x1[0]}, x1_max = {x1[1]}')
+    print(f'x2_min = {x2[0]}, x2_max = {x2[1]}')
+    print(f'x3_min = {x3[0]}, x3_max = {x3[1]}')
 
-    print("x1: ", x1)
-    print("x2: ", x2)
-    print("x3: ", x3)
+    # Матриця планування експерименту з +1,-1
+    x0_plan1 = [1, 1, 1, 1]
+    x1_plan1 = [-1, -1, 1, 1]
+    x2_plan1 = [-1, 1, -1, 1]
+    x3_plan1 = [-1 * (x1_plan1[i] * x2_plan1[i]) for i in range(len(x1_plan1))]
+    print('x0:', x0_plan1)
+    print('x1:', x1_plan1)
+    print('x2:', x2_plan1)
+    print('x3:', x3_plan1)
 
-    x0_plan_array = [1, 1, 1, 1]
-    x1_plan_array = [-1, -1, 1, 1]
-    x2_plan_array = [-1, 1, -1, 1]
-    x3_plan_array = [-1 * (x1_plan_array[i] * x2_plan_array[i]) for i in range(len(x1_plan_array))]
+    # Матриця планування з натуралізованими значеннями факторів
+    x1_plan2 = naturalize(x1_plan1, x1)
+    x2_plan2 = naturalize(x2_plan1, x2)
+    x3_plan2 = naturalize(x3_plan1, x3)
+    print()
+    print('x1:', x1_plan2)
+    print('x2:', x2_plan2)
+    print('x3:', x3_plan2)
 
-    print("\nx0:", x0_plan_array)
-    print("x1:", x1_plan_array)
-    print("x2:", x2_plan_array)
-    print("x3:", x3_plan_array)
+    x_avg_max = (max(x1_plan2) + max(x2_plan2) + max(x3_plan2)) / 3
+    x_avg_min = (min(x1_plan2) + min(x2_plan2) + min(x3_plan2)) / 3
+    print()
+    print(f'x_avg_max = {x_avg_max}')
+    print(f'x_avg_min = {x_avg_min}')
 
-    x1_plan_naturalized = naturalize(x1_plan_array, x1)
-    x2_plan_naturalized = naturalize(x2_plan_array, x2)
-    x3_plan_naturalized = naturalize(x3_plan_array, x3)
-
-    print('\nx1:', x1_plan_naturalized)
-    print('x2:', x2_plan_naturalized)
-    print('x3:', x3_plan_naturalized)
-
-    x_avg_max = (max(x1_plan_naturalized) + max(x2_plan_naturalized) + max(x3_plan_naturalized)) / 3
-    x_avg_min = (min(x1_plan_naturalized) + min(x2_plan_naturalized) + min(x3_plan_naturalized)) / 3
-
-    print("\nx_avg_max = ", x_avg_max)
-    print("x_avg_min = ", x_avg_min)
-
-    y_min = int(200 + x_avg_min)
+    # Діапазон y
     y_max = int(200 + x_avg_max)
+    y_min = int(200 + x_avg_min)
+    print()
+    print(f'y_max = {y_max}')
+    print(f'y_min = {y_min}')
 
-    print("\ny_max = ", y_max)
-    print("y_min = ", y_min)
+    y1 = [randint(y_min, y_max) for _ in range(4)]
+    y2 = [randint(y_min, y_max) for _ in range(4)]
+    y3 = [randint(y_min, y_max) for _ in range(4)]
+    print('y1:', y1)
+    print('y2:', y2)
+    print('y3:', y3)
 
-    y1 = [randint(y_min, y_max) for i in range(4)]
-    y2 = [randint(y_min, y_max) for i in range(4)]
-    y3 = [randint(y_min, y_max) for i in range(4)]
+    y_avg_arr = [(y1[i] + y2[i] + y3[i]) / 3 for i in range(4)]
+    print('y average:', y_avg_arr)
 
-    print("\ny1:", y1)
-    print("y2:", y2)
-    print("y3:", y3)
+    # Математичне очікування
+    mx1 = reduce(lambda a, b: a + b, x1_plan2) / 4
+    mx2 = reduce(lambda a, b: a + b, x2_plan2) / 4
+    mx3 = reduce(lambda a, b: a + b, x3_plan2) / 4
+    my = reduce(lambda a, b: a + b, y_avg_arr) / 4
+    print()
+    print(f'mx1 = {mx1}')
+    print(f'mx2 = {mx2}')
+    print(f'mx3 = {mx3}')
+    print(f'my = {my}')
 
-    y_avg_array = [(y1[i] + y2[i] + y3[i]) / 3 for i in range(4)]
-    print("\nAverage y: ", y_avg_array)
+    a1 = sum([x1_plan2[i] * y_avg_arr[i] for i in range(4)]) / 4
+    a2 = sum([x2_plan2[i] * y_avg_arr[i] for i in range(4)]) / 4
+    a3 = sum([x3_plan2[i] * y_avg_arr[i] for i in range(4)]) / 4
+    print()
+    print(f'a1 = {a1}')
+    print(f'a2 = {a2}')
+    print(f'a3 = {a3}')
 
-    mx1 = reduce(lambda a, b: a + b, x1_plan_naturalized) / 4
-    mx2 = reduce(lambda a, b: a + b, x2_plan_naturalized) / 4
-    mx3 = reduce(lambda a, b: a + b, x3_plan_naturalized) / 4
-    my = reduce(lambda a, b: a + b, y_avg_array) / 4
+    a11 = sum([i * i for i in x1_plan2]) / 4
+    a22 = sum([i * i for i in x2_plan2]) / 4
+    a33 = sum([i * i for i in x3_plan2]) / 4
+    print(f'a11 = {a11}')
+    print(f'a22 = {a22}')
+    print(f'a33 = {a33}')
 
-    print("\nmx1 = ", mx1)
-    print("mx2 = ", mx2)
-    print("mx3 = ", mx3)
-    print("my = ", my)
-
-    a1 = sum([x1_plan_naturalized[i] * y_avg_array[i] for i in range(4)]) / 4
-    a2 = sum([x2_plan_naturalized[i] * y_avg_array[i] for i in range(4)]) / 4
-    a3 = sum([x3_plan_naturalized[i] * y_avg_array[i] for i in range(4)]) / 4
-
-    a11 = sum([i * i for i in x1_plan_naturalized]) / 4
-    a22 = sum([i * i for i in x2_plan_naturalized]) / 4
-    a33 = sum([i * i for i in x3_plan_naturalized]) / 4
-
-    a12 = sum([x1_plan_naturalized[i] * x2_plan_naturalized[i] for i in range(4)]) / 4
-    a13 = sum([x1_plan_naturalized[i] * x3_plan_naturalized[i] for i in range(4)]) / 4
-    a23 = sum([x2_plan_naturalized[i] * x3_plan_naturalized[i] for i in range(4)]) / 4
-
+    a12 = sum([x1_plan2[i] * x2_plan2[i] for i in range(4)]) / 4
+    a13 = sum([x1_plan2[i] * x3_plan2[i] for i in range(4)]) / 4
+    a23 = sum([x2_plan2[i] * x3_plan2[i] for i in range(4)]) / 4
     a21 = a12
     a31 = a13
     a32 = a23
-
-    print("\na1 = ", a1)
-    print("a2 = ", a2)
-    print("a3 = ", a3)
-
-    print("\na11 = ", a11)
-    print("a22 = ", a22)
-    print("a33 = ", a33)
-
-    print("\na12 = ", a12)
-    print("a13 = ", a13)
-    print("a23 = ", a23)
-
-    print("\na21 = ", a21)
-    print("a31 = ", a31)
-    print("a32 = ", a32)
+    print(f'a12 = {a12}')
+    print(f'a13 = {a13}')
+    print(f'a23 = {a23}')
+    print(f'a21 = {a21}')
+    print(f'a31 = {a31}')
+    print(f'a32 = {a32}')
 
     b0 = det([[my, mx1, mx2, mx3],
               [a1, a11, a12, a13],
@@ -131,75 +129,72 @@ def main():
                                            [mx2, a21, a22, a23],
                                            [mx3, a31, a32, a33]])
 
-    print("\ny = b0 + b1*x1 + b2*x2 + b3*x3")
-    print(f"y = {b0} + {b1}*x1 + {b2}*x2 + b3*x3")
+    print(f'y = {b0} + {b1}*x1 + {b2}*x2 + {b3}*x3')
 
     for i in range(4):
-        y = b0 + b1 * x1_plan_naturalized[i] + b2 * x2_plan_naturalized[i] + b3 * x3_plan_naturalized[i]
+        y = b0 + b1 * x1_plan2[i] + b2 * x2_plan2[i] + b3 * x3_plan2[i]
+        print('y =', y)
 
-    dispersion = [((y1[i] - y_avg_array[i]) ** 2 + (y2[i] - y_avg_array[i]) ** 2 + (y3[i] - y_avg_array[i]) ** 2) / 3
-                  for i in
-                  range(4)]
-
-    print("\ndispersion: ", dispersion)
+    # Перевірка однорідності дисперсії за критерієм Кохрена
+    dispersion = [((y1[i] - y_avg_arr[i]) ** 2 + (y2[i] - y_avg_arr[i]) ** 2 + (y3[i] - y_avg_arr[i]) ** 2) / 3 for i in range(4)]
+    print('dispersion:', dispersion)
 
     gp = max(dispersion) / sum(dispersion)
+    print('Gp =', gp)
 
-    print("\nКоефіцієнт Gp = ", gp)
-
-    m = 3
-    # f1=m-1=2, f2=N=4, q=0.05 => Gт=0.7679 за таблицею
-    if gp > 0.7679:
-        print("\nДисперсія неоднорідна!")
+    # Рівень значимості q = 0.05; f1 = m - 1 = 2; f2 = N = 4
+    # За таблицею Gт = 0.7679
+    if gp < 0.7679:
+        print('Дисперсія однорідна')
+    else:
+        print('Дисперсія неоднорідна')
         exit()
 
-    print("\nGp < 0.7679 => Дисперсія однорідна")
-
-    #КРИТЕРІЙ СТЬЮДЕНТА
+    # Оцінка значимості коефіцієнтів регресії згідно критерію Стьюдента
     s2b = sum(dispersion) / 4
-    s2bs_avg = s2b / (4 * m)
-    sb = s2bs_avg ** (1 / 2)
+    s2bs_avg = s2b/4*m
+    sb = s2bs_avg ** (1/2)
 
-    beta0 = sum([y_avg_array[i] * x0_plan_array[i] for i in range(4)]) / 4
-    beta1 = sum([y_avg_array[i] * x1_plan_array[i] for i in range(4)]) / 4
-    beta2 = sum([y_avg_array[i] * x2_plan_array[i] for i in range(4)]) / 4
-    beta3 = sum([y_avg_array[i] * x3_plan_array[i] for i in range(4)]) / 4
+    beta0 = sum([y_avg_arr[i] * x0_plan1[i] for i in range(4)]) / 4
+    beta1 = sum([y_avg_arr[i] * x1_plan1[i] for i in range(4)]) / 4
+    beta2 = sum([y_avg_arr[i] * x2_plan1[i] for i in range(4)]) / 4
+    beta3 = sum([y_avg_arr[i] * x3_plan1[i] for i in range(4)]) / 4
 
-    beta_array = [beta0, beta1, beta2, beta3]
+    beta_arr = [beta0, beta1, beta2, beta3]
+    print('beta:', beta_arr)
+    t_arr = [abs(beta_arr[i])/sb for i in range(4)]
+    print('t:', t_arr)
 
-    print("\nbeta: ", beta_array)
-
-    t_array = [abs(beta_array[i]) / sb for i in range(4)]
-
-    print("\nt: ", t_array)
-    print()
-
-
-    d = 0
+    # f3 = f1*f2 = 2*4 = 8
+    # З таблиці беремо значення 2.306
     indexes = []
-    for i, v in enumerate(t_array):
-        if t_array[i] > 2.306:
+    for i, v in enumerate(t_arr):
+        if t_arr[i] > 2.306:
             indexes.append(i)
-            d += 1
         else:
-            print(f"Коефіцієнт b{i} = {v} є статистично незначущим і його слід виключити з рівняння регресії.")
+            print(f'Коефіцієнт b{i} = {v} приймаємо не значним')
 
-    b_array = [b0, b1, b2, b3]
+    b_list = [b0, b1, b2, b3]
+    print(f'y = b{indexes[0]}')
 
-    b_result = [b_array[indexes[0]] for i in range(4)]
+    b_res = [b_list[indexes[0]] for _ in range(4)]
+    for i in b_res:
+        print(f'y = {i}')
 
-    #КРИТЕРІй ФІШЕРА
-    s2_ad = m * sum([(y_avg_array[i] - b_result[i]) ** 2 for i in range(4)]) / (4 - d)
-    fp = s2_ad / s2b
+    # Критерій Фішера
+    # кількість значимих коефіцієнтів
+    d = 1
+    s2_ad = m * sum([(y_avg_arr[i] - b_res[i])**2 for i in range(4)]) / 4 - d
+    fp = s2_ad/s2b
+    print(f'Fp = {fp}')
 
-    print("\nFp = ", fp)
-
-
-    if fp < 4.1:
-        print("Fp < Fт.")
+    # Fт = 4.5
+    if fp > 4.5:
+        print('Рівняння регресії неадекватно оригіналу при рівні значимості 0.05')
     else:
-        print("Fp > Fт. ")
+        print('Рівняння регресії адекватно оригіналу при рівні значимості 0.05')
 
 
 if __name__ == '__main__':
     main()
+
