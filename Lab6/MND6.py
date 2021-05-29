@@ -20,6 +20,7 @@ x03 = (x3max + x3min) / 2
 deltax1 = x1max - x01
 deltax2 = x2max - x02
 deltax3 = x3max - x03
+numD = 0
 
 
 def function(X1, X2, X3):
@@ -29,6 +30,7 @@ def function(X1, X2, X3):
 
 def main(n,m):
     global coefs_count
+    global numD
 
     xn = [[-1, -1, -1, +1, +1, +1, -1, +1, +1, +1],
           [-1, -1, +1, +1, -1, -1, +1, +1, +1, +1],
@@ -163,8 +165,10 @@ def main(n,m):
     print("Gp =", Gp)
     if Gp < Gt:
         print("Дисперсія однорідна")
+        numD += 1
     else:
         print("Дисперсія неоднорідна")
+
 
     print("\n------------------ Перевірка значущості коефіцієнтів за критерієм Стьюдента ------------------")
     sb = sum(dispersions) / len(dispersions)
@@ -211,13 +215,17 @@ def main(n,m):
     else:
         print("Рівняння регресії неадекватне при рівні значимості 0.05")
 
-coefs_count = 0
-iterations_count = 0
-while coefs_count < 50:
-    main(15,3)
-    if coefs_count < 50:
-        iterations_count += 1
+nD = 0
+while nD <= 100:
+    coefs_count = 0
+    iterations_count = 0
+    while coefs_count < 50:
+        main(15,3)
+        if coefs_count < 50:
+            iterations_count += 1
+    nD += 1
 
 print("Кількість значимих коефіціентів: ", coefs_count)
 print("Кількість ітерацій за які досягли 50+ значимих коефіціентів: ", iterations_count)
+print('Кількість однорідних дисперсій: ', numD)
 
